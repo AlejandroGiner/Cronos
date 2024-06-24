@@ -46,8 +46,8 @@ def get_time(hours, minutes, tz):
     aware = pytz.timezone(tz).localize(naive)
     return aware
 
-def get_embed(name, value, title):
-    embed = discord.Embed(color=discord.Color.green(), title=title)
+def get_embed(name, value):
+    embed = discord.Embed(color=discord.Color.green())
     embed.add_field(name=name, value=value)
     return embed
 
@@ -94,7 +94,7 @@ class Cronos(commands.Cog):
 
         aware = get_time(hours, minutes, tz_str)
         try:
-            embed = get_embed('Hora', f'<t:{int(aware.timestamp())}:t>', 'Título')
+            embed = get_embed('Hora', f'<t:{int(aware.timestamp())}:t>')
         except Exception as e:
             print(e)
         await ctx.send(embed=embed)
