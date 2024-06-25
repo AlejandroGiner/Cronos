@@ -117,6 +117,8 @@ class Cronos(commands.Cog):
         cur = self.conn.cursor()
         cur.execute('SELECT * FROM users WHERE user_id=?', (user.id,))
         info = cur.fetchone()
+        if info is None:
+            await ctx.send(f'No hay información almacenada acerca de ti.')
         await ctx.send(f'Ciudad: {info[2]}. Zona horaria: {info[1]}')
         print(info)
 
