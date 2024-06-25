@@ -17,7 +17,7 @@ async def load_cog(ctx, *, cog: str):
 @bot.command(name='kill',hidden=True)
 async def kill(ctx):
     await ctx.send("Apagando bot...")
-    await bot.logout()
+    await bot.close()
 
 @bot.event
 async def on_ready():
