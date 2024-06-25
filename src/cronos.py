@@ -78,8 +78,10 @@ class Cronos(commands.Cog):
         self.conn.commit()
 
     @commands.command(name='time', aliases=['hora', 't'])
-    async def _time(self, ctx, *, time_str, tz_str=None):
-
+    async def _time(self, ctx, *, time_str=None):
+        if time_str is None:
+            await ctx.send('Especifica una hora.')
+            return
         try:
             hours, minutes = parse_time(time_str)
         except ValueError:
@@ -87,10 +89,13 @@ class Cronos(commands.Cog):
             return
         hours = hours % 24
 
-        if not tz_str:
-            cur = self.conn.cursor()
-            cur.execute("SELECT timezone FROM users WHERE user_id=?", (ctx.author.id,))
-            tz_str = cur.fetchone()[0]
+        cur = self.conn.cursor()
+        cur.execute("SELECT timezone FROM users WHERE user_id=?", (ctx.author.id,))
+        result = cur.fetchone()
+        if result is None:
+            await ctx.send('No hay información de localización acerca de ti. Por favor usa el comando ciudad.')
+            return
+        tz_str = result[0]
 
         aware = get_time(hours, minutes, tz_str)
         try:
