@@ -100,7 +100,10 @@ class Cronos(commands.Cog):
         await ctx.send(embed=embed)
 
     @commands.command(name='city', aliases=['ciudad'])
-    async def _city(self, ctx, *,  city='Palencia'):
+    async def _city(self, ctx, *,  city=None):
+        if city is None:
+            await ctx.send('Por favor, introduce una ciudad.')
+            return
         geolocator = geopy.geocoders.Nominatim(user_agent='timezone_bot')
         location = geolocator.geocode(city)
         tz_finder = TimezoneFinder()
@@ -127,7 +130,11 @@ class Cronos(commands.Cog):
         if not city:
             cur = self.conn.cursor()
             cur.execute('SELECT city FROM users WHERE user_id=?', (ctx.author.id,))
-            city = cur.fetchone()[0]
+            result = cur.fetchone()
+            if result is None:
+                await ctx.send('No hay información de localización acerca de ti. Por favor usa el comando ciudad.')
+                return
+            city = result[0]
         print(f'Fetching weather for {city}')
         async with python_weather.Client() as client:
             weather = await client.get(city)
