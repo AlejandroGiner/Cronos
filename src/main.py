@@ -5,7 +5,6 @@ from datetime import datetime
 bot = commands.Bot('.', intents=discord.Intents.all())
 
 @bot.command(name="load", hidden=True)
-@commands.is_owner()
 async def load_cog(ctx, *, cog: str):
     try:
         await bot.load_extension(cog)
@@ -14,6 +13,11 @@ async def load_cog(ctx, *, cog: str):
         await bot.reload_extension(cog)
     finally:
         await ctx.send(f"Extensión {cog} recargada con éxito.")
+
+@bot.command(name='kill',hidden=True)
+async def kill(ctx):
+    await ctx.send("Apagando bot...")
+    await bot.logout()
 
 @bot.event
 async def on_ready():
